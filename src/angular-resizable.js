@@ -22,7 +22,8 @@ angular.module('angularResizable', [])
                 rHeight: '=',
                 rFlex: '=',
                 rGrabber: '@',
-                rDisabled: '@'
+                rDisabled: '@',
+                rContainer: '@' // querySelector
             },
             link: function(scope, element, attr) {
                 var flexBasis = 'flexBasis' in document.documentElement.style ? 'flexBasis' :
@@ -118,11 +119,17 @@ angular.module('angularResizable', [])
 
                 dir.forEach(function (direction) {
                     var grabber = document.createElement('div');
+                    var container;
+
+                    if(!scope.rContainer)
+                        container = element;
+                    else
+                        container = angular.element(document.querySelector(scope.rContainer));
 
                     // add class for styling purposes
                     grabber.setAttribute('class', 'rg-' + direction);
                     grabber.innerHTML = inner;
-                    element[0].appendChild(grabber);
+                    container.append(grabber);
                     grabber.ondragstart = function() { return false; };
                     grabber.addEventListener('mousedown', function(e) {
                         var disabled = (scope.rDisabled === 'true');
